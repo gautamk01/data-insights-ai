@@ -22,7 +22,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // ... (keep your API_BASE, handleAskQuestion, and handleClearResults functions)
+  //(keep your API_BASE, handleAskQuestion, and handleClearResults functions)
   const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
 
   const handleAskQuestion = async () => {
