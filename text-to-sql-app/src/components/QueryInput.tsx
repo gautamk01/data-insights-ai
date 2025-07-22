@@ -18,8 +18,10 @@ const QueryInput = ({
   const quickQuestions = [
     "What are my top 5 products by sales?",
     "Show me daily revenue trends",
-    "Compare sales by category",
-    "What is the market share breakdown?",
+    "What is my total sales ",
+    "Calculate the RoAS (Return on Ad Spend)",
+    "Which product had the highest CPC (Cost Per Click)?",
+    "Give me a breakdown of ad spend by product for all items",
   ];
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -52,7 +54,7 @@ const QueryInput = ({
             onClick={() => setQuestion(q)}
             disabled={isLoading}
           >
-            {q.split(" ").slice(0, 2).join(" ")}
+            {q}
           </button>
         ))}
       </div>

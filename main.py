@@ -1,4 +1,3 @@
-# main.py
 from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -50,7 +49,7 @@ def ask_endpoint(payload: Question):
 
         sql = result["sql"]
         rows = result.get("data", [])
-        chart_url = None   # <-- charts off
+        chart_url = None
 
         return {"answer": result.get("answer", str(rows)), "sql": sql, "chart": chart_url}
     except Exception as e:
@@ -123,33 +122,6 @@ def ask_viz(payload: Question):
             "success": False,
             "debug_info": f"Exception: {str(e)}"
         }
-
-
-@app.post("/ask/chart")
-def ask_chart(payload: Question):
-    try:
-        result = handle_question(payload.question)
-
-        # If query was rejected, return error
-        if not result.get("success", True) or not result.get("sql"):
-            return {
-                "answer": result.get("answer", "Cannot generate chart"),
-                "chart": None
-            }
-
-        sql = result["sql"]
-        rows = result.get("data", [])
-
-        if not rows:
-            return {"answer": "No data available for chart", "chart": None}
-
-        df = pd.DataFrame(rows)
-        if "date" in df.columns and "revenue" in df.columns:
-            chart_url = line_chart(df, "date", "revenue", "Revenue trend")
-            return {"answer": "Chart generated", "chart": chart_url}
-        return {"answer": str(rows), "chart": None}
-    except Exception as e:
-        return {"answer": f"Error: {e}", "chart": None}
 
 
 @app.get("/ask/stream")
