@@ -10,11 +10,26 @@
         const q = document.getElementById("q").value;
         const out = document.getElementById("out");
         out.innerHTML = "";
-        const es = new EventSource(`/ask?question=${encodeURIComponent(q)}`);
+
+        const es = new EventSource(
+          `/ask/viz?question=${encodeURIComponent(q)}`
+        );
+
         es.onmessage = (e) => {
-          const d = JSON.parse(e.data);
-          if (d.type === "done") es.close();
-          else out.innerHTML += d.text + "\n";
+          console.log("SSE message:", e.data); // Debug log
+          try {
+            const d = JSON.parse(e.data);
+            if (d.type === "done") es.close();
+            else out.innerHTML += d.text + "\n";
+          } catch (err) {
+            out.innerHTML += "Error parsing response: " + e.data + "\n";
+            console.error("JSON parse error:", err, e.data);
+          }
+        };
+
+        es.onerror = (e) => {
+          out.innerHTML += "SSE Error. See console.\n";
+          console.error("SSE connection error", e);
         };
       }
     </script>

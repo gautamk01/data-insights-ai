@@ -155,18 +155,3 @@ def handle_question(question: str):
             "chart": None,
             "success": False
         }
-
-
-if __name__ == "__main__":
-    # Test queries
-    test_questions = [
-        "What is my total sales?",
-        "Which product had the highest CPC?",
-        "Generate a complete performance report",  # Should be rejected
-        "Show me profit margins"  # Should be rejected
-    ]
-
-    for q in test_questions:
-        print(f"\nTesting: {q}")
-        result = handle_question(q)
-        print(f"Result: {result}")

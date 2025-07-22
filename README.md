@@ -15,6 +15,7 @@ This project is a web-based application that allows users to ask questions in na
 The application is composed of two main parts:
 
 1.  **Backend (FastAPI):**
+
     - `main.py`: The main FastAPI application file that defines the API endpoints.
     - `text_to_sql.py`: Handles the conversion of natural language questions to SQL queries using the Gemini API.
     - `choose_visualization.py`: Determines the best visualization type for the given data.
@@ -26,6 +27,14 @@ The application is composed of two main parts:
     - `text-to-sql-app/`: The root directory for the Next.js application.
     - `src/app/page.tsx`: The main page of the application.
     - `src/components/`: Contains the React components for the UI (query input, results display, charts).
+
+### Architecture Diagram
+
+![Architecture Diagram](data/processed/architecture.png)
+
+## App Frontend Image
+
+![App Frontend](data/processed/Image.png)
 
 ## Setup and Running the Project Locally
 
@@ -40,12 +49,14 @@ Follow these steps to run the project on your local machine.
 ### Backend Setup
 
 1.  **Clone the repository:**
+
     ```bash
     git clone <repository-url>
     cd ecommerce-ai-agent
     ```
 
 2.  **Create a virtual environment and install dependencies:**
+
     ```bash
     python -m venv agentai
     source agentai/bin/activate  # On Windows use `agentai\Scripts\activate`
@@ -54,6 +65,7 @@ Follow these steps to run the project on your local machine.
 
 3.  **Set up your API key:**
     Create a `.env` file in the root of the project and add your Gemini API key:
+
     ```
     GEMINI_API_KEY="YOUR_GEMINI_API_KEY"
     ```
@@ -67,11 +79,13 @@ Follow these steps to run the project on your local machine.
 ### Frontend Setup
 
 1.  **Navigate to the frontend directory:**
+
     ```bash
     cd text-to-sql-app
     ```
 
 2.  **Install Node.js dependencies:**
+
     ```bash
     npm install
     ```
@@ -84,9 +98,11 @@ Follow these steps to run the project on your local machine.
     ```
 
 4.  **Run the Next.js development server:**
+
     ```bash
     npm run dev
     ```
+
     The frontend will be running at `http://localhost:3000`.
 
 5.  **Open your browser:**
@@ -99,3 +115,30 @@ The main API endpoint provided by the FastAPI backend is:
 - `POST /ask/viz`:
   - Takes a JSON payload with a "question" field (e.g., `{"question": "What are the top 5 selling products?"}`).
   - Returns a JSON response containing the answer, the generated SQL query, and the data formatted for visualization.
+
+### Example
+
+**Request:**
+
+```bash
+curl -X POST http://localhost:8000/ask/viz \
+  -H "Content-Type: application/json" \
+  -d '{"question":"calculate the RoAS (Return on Ad Spend)"}'
+```
+
+**Response:**
+
+```json
+{
+  "answer": "Result: 7.123479455901441",
+  "sql": "SELECT SUM(ad_sales) / SUM(ad_spend) AS roas FROM ad_sales WHERE ad_spend > 0;",
+  "chart_type": "none",
+  "chart_data": null,
+  "success": true,
+  "debug_info": {
+    "rows_count": 1,
+    "columns": ["roas"],
+    "chart_formatted": false
+  }
+}
+```

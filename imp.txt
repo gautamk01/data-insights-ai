@@ -2,6 +2,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI
 from pydantic import BaseModel
 from text_to_sql import handle_question
+from sse_starlette.sse import EventSourceResponse
+import asyncio
 from choose_visualization import choose_chart
 from formatter import format_for_chart
 import json
@@ -34,6 +36,22 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 class Question(BaseModel):
     question: str
+
+
+@app.get("/ask")
+def ask_get(question: str):
+    try:
+        result = handle_question(question)
+        if not result.get("success", True) or not result.get("sql"):
+            return {"answer": result.get("answer", "No answer"), "sql": "", "chart": None}
+
+        sql = result["sql"]
+        rows = result.get("data", [])
+        chart_url = None
+
+        return {"answer": result.get("answer", str(rows)), "sql": sql, "chart": chart_url}
+    except Exception as e:
+        return {"answer": f"Error: {e}", "sql": "", "chart": None}
 
 
 @app.post("/ask/viz")
@@ -101,3 +119,46 @@ def ask_viz(payload: Question):
             "success": False,
             "debug_info": f"Exception: {str(e)}"
         }
+
+
+@app.get("/ask/stream")
+async def ask_stream(question: str):
+    try:
+        result = handle_question(question)
+
+        async def event_generator():
+            # Optional: log or yield debug info
+            print("RESULT:", result)
+
+            # Send SQL first
+            sql = result.get("sql", "")
+            if sql:
+                yield {"data": json.dumps({"type": "sql", "text": sql})}
+                await asyncio.sleep(0.3)
+
+            # Send answer
+            answer = result.get("answer", "No answer available")
+            yield {"data": json.dumps({"type": "answer", "text": answer})}
+            await asyncio.sleep(0.3)
+
+            # Send data if any
+            if result.get("success", False) and result.get("data"):
+                yield {"data": json.dumps({
+                    "type": "data", "text": str(result["data"])
+                })}
+                await asyncio.sleep(0.3)
+
+            yield {"data": json.dumps({"type": "done"})}
+
+        return EventSourceResponse(event_generator())
+
+    except Exception as e:
+        async def error_generator():
+            yield {"data": json.dumps({"type": "error", "text": str(e)})}
+            yield {"data": json.dumps({"type": "done"})}
+        return EventSourceResponse(error_generator())
+
+
+@app.get("/")
+def root():
+    return {"status": "ok"}
