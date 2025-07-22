@@ -18,7 +18,7 @@ app = FastAPI(title="E-commerce AI Agent")
 # Define the origins your frontend will run on
 # For development, this is typically localhost:3000
 origins = [
-    "http://localhost:3000", "https://data-insights-ai-puce.vercel.app/"
+    "http://localhost:3000", "https://data-insights-ai-puce.vercel.app"
 ]
 # Add the CORS middleware to your app
 app.add_middleware(
