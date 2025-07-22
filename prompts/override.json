@@ -1,0 +1,3 @@
+{
+  "highest_cpc": "SELECT item_id, ad_spend / clicks AS cpc FROM ad_sales WHERE clicks > 0 ORDER BY cpc DESC LIMIT 1"
+}

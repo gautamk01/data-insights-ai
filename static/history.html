@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Query History - Data Insights</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      /* Animations */
+      .fade-in {
+        opacity: 0;
+        animation: fadeIn 0.5s ease-in-out forwards;
+      }
+      @keyframes fadeIn {
+        to {
+          opacity: 1;
+        }
+      }
+      .slide-down {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+      }
+      .slide-down.open {
+        max-height: 1000px;
+      }
+      /* Custom scrollbar */
+      .custom-scrollbar {
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e0 #f7fafc;
+      }
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: #f7fafc;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background-color: #cbd5e0;
+        border-radius: 3px;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-800">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+      <div
+        class="container mx-auto px-6 py-4 flex justify-between items-center"
+      >
+        <div class="flex items-center space-x-2">
+          <!-- Data Insights Icon -->
+          <svg
+            class="w-8 h-8 text-blue-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+            ></path>
+          </svg>
+          <h1 class="text-xl font-bold">Data Insights</h1>
+        </div>
+        <nav class="hidden md:flex items-center space-x-8">
+          <a
+            href="index.html"
+            class="text-gray-600 hover:text-blue-600 transition-colors"
+            >Home</a
+          >
+          <a
+            href="index.html#query"
+            class="text-gray-600 hover:text-blue-600 transition-colors"
+            >Query</a
+          >
+          <a
+            href="#"
+            class="text-blue-600 font-semibold border-b-2 border-blue-600 pb-1"
+            >History</a
+          >
+        </nav>
+        <div class="flex items-center space-x-4">
+          <!-- Info Icon -->
+          <button class="text-gray-500 hover:text-gray-700 transition-colors">
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
+            </svg>
+          </button>
+          <!-- User Profile Icon -->
+          <div class="w-8 h-8 bg-gray-800 rounded-full"></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-12">
+      <div class="max-w-6xl mx-auto">
+        <!-- Page Header -->
+        <section class="mb-8">
+          <div class="flex justify-between items-start">
+            <div>
+              <h2 class="text-4xl font-bold mb-4">Query History</h2>
+              <p class="text-gray-600 text-lg">
+                View and manage your previous data analysis queries. Click on
+                any query to view detailed results.
+              </p>
+            </div>
+            <div class="flex items-center space-x-4">
+              <span id="totalQueries" class="text-sm text-gray-500"
+                >0 queries</span
+              >
+              <button
+                id="clearAllBtn"
+                class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              >
+                Clear All
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Search and Filters -->
+        <section class="mb-8">
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <div class="flex flex-col md:flex-row gap-4">
+              <!-- Search -->
+              <div class="flex-1">
+                <label for="searchQuery" class="block text-sm font-medium mb-2"
+                  >Search Queries</label
+                >
+                <div class="relative">
+                  <input
+                    type="text"
+                    id="searchQuery"
+                    placeholder="Search your previous questions..."
+                    class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                  />
+                  <svg
+                    class="absolute left-3 top-3.5 w-4 h-4 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Date Filter -->
+              <div class="md:w-48">
+                <label for="dateFilter" class="block text-sm font-medium mb-2"
+                  >Filter by Date</label
+                >
+                <select
+                  id="dateFilter"
+                  class="w-full py-3 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                >
+                  <option value="all">All Time</option>
+                  <option value="today">Today</option>
+                  <option value="week">This Week</option>
+                  <option value="month">This Month</option>
+                </select>
+              </div>
+
+              <!-- Sort -->
+              <div class="md:w-48">
+                <label for="sortBy" class="block text-sm font-medium mb-2"
+                  >Sort by</label
+                >
+                <select
+                  id="sortBy"
+                  class="w-full py-3 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                >
+                  <option value="newest">Newest First</option>
+                  <option value="oldest">Oldest First</option>
+                  <option value="alphabetical">A-Z</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- History List -->
+        <section>
+          <!-- Empty State -->
+          <div
+            id="emptyState"
+            class="text-center py-12 bg-white rounded-lg shadow-md hidden"
+          >
+            <svg
+              class="w-16 h-16 text-gray-300 mx-auto mb-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              ></path>
+            </svg>
+            <h3 class="text-xl font-semibold text-gray-500 mb-2">
+              No queries found
+            </h3>
+            <p class="text-gray-400 mb-4">
+              Start asking questions to see your query history here.
+            </p>
+            <a
+              href="index.html"
+              class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <svg
+                class="w-5 h-5 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4v16m8-8H4"
+                ></path>
+              </svg>
+              Ask Your First Question
+            </a>
+          </div>
+
+          <!-- History Items -->
+          <div id="historyContainer" class="space-y-4">
+            <!-- History items will be dynamically populated here -->
+          </div>
+
+          <!-- Load More Button -->
+          <div id="loadMoreSection" class="text-center mt-8 hidden">
+            <button
+              id="loadMoreBtn"
+              class="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+            >
+              Load More Queries
+            </button>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Confirmation Modal -->
+    <div
+      id="confirmModal"
+      class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50"
+    >
+      <div class="bg-white p-6 rounded-lg shadow-xl max-w-md mx-4">
+        <h3 class="text-lg font-semibold mb-4">Confirm Action</h3>
+        <p id="confirmMessage" class="text-gray-600 mb-6"></p>
+        <div class="flex justify-end space-x-4">
+          <button
+            id="cancelBtn"
+            class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            id="confirmBtn"
+            class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+          >
+            Confirm
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Wait for DOM to load
+      document.addEventListener("DOMContentLoaded", () => {
+        // Element selections
+        const searchQuery = document.getElementById("searchQuery");
+        const dateFilter = document.getElementById("dateFilter");
+        const sortBy = document.getElementById("sortBy");
+        const historyContainer = document.getElementById("historyContainer");
+        const emptyState = document.getElementById("emptyState");
+        const totalQueries = document.getElementById("totalQueries");
+        const clearAllBtn = document.getElementById("clearAllBtn");
+        const loadMoreBtn = document.getElementById("loadMoreBtn");
+        const loadMoreSection = document.getElementById("loadMoreSection");
+        const confirmModal = document.getElementById("confirmModal");
+        const confirmMessage = document.getElementById("confirmMessage");
+        const confirmBtn = document.getElementById("confirmBtn");
+        const cancelBtn = document.getElementById("cancelBtn");
+
+        // Mock data - In real app, this would come from your backend
+        let queryHistory = [
+          {
+            id: 1,
+            question: "Which products have highest CPC?",
+            answer: "Found 1 results: [{'item_id': 22, 'cpc': 10.21}]",
+            sql: "SELECT item_id, ad_spend / clicks AS cpc FROM ad_sales WHERE clicks > 0 ORDER BY cpc DESC LIMIT 1",
+            chart: "/static/charts/ce20cbcc-8349-4e8e-860c-58b8b97863dd.png",
+            timestamp: new Date("2024-01-15T10:30:00"),
+            duration: "2.3s",
+          },
+          {
+            id: 2,
+            question: "What was the total revenue last month?",
+            answer:
+              "Total revenue for last month was $245,678.90 from 1,234 orders",
+            sql: "SELECT SUM(order_total) as total_revenue, COUNT(*) as order_count FROM orders WHERE MONTH(order_date) = MONTH(DATE_SUB(NOW(), INTERVAL 1 MONTH))",
+            chart: "/static/charts/revenue-chart-456.png",
+            timestamp: new Date("2024-01-14T15:45:00"),
+            duration: "1.8s",
+          },
+          {
+            id: 3,
+            question: "Show me top 5 customers by purchase value",
+            answer:
+              "Top 5 customers: John Doe ($12,345), Jane Smith ($9,876), Bob Wilson ($8,543), Alice Johnson ($7,234), Mike Brown ($6,789)",
+            sql: "SELECT customer_name, SUM(order_total) as total_spent FROM customers c JOIN orders o ON c.id = o.customer_id GROUP BY c.id ORDER BY total_spent DESC LIMIT 5",
+            chart: null,
+            timestamp: new Date("2024-01-13T09:15:00"),
+            duration: "3.1s",
+          },
+          {
+            id: 4,
+            question: "What are the sales trends for this quarter?",
+            answer:
+              "Sales have increased by 15% compared to last quarter, with strongest performance in March (+22%)",
+            sql: "SELECT MONTH(order_date) as month, SUM(order_total) as monthly_sales FROM orders WHERE QUARTER(order_date) = QUARTER(NOW()) GROUP BY MONTH(order_date)",
+            chart: "/static/charts/trends-chart-789.png",
+            timestamp: new Date("2024-01-12T14:20:00"),
+            duration: "4.2s",
+          },
+        ];
+
+        let filteredHistory = [...queryHistory];
+        let currentPage = 1;
+        const itemsPerPage = 10;
+
+        // Initialize page
+        init();
+
+        function init() {
+          updateDisplay();
+          bindEvents();
+        }
+
+        function bindEvents() {
+          // Search functionality
+          searchQuery.addEventListener("input", debounce(handleSearch, 300));
+
+          // Filter functionality
+          dateFilter.addEventListener("change", handleFilters);
+          sortBy.addEventListener("change", handleFilters);
+
+          // Clear all button
+          clearAllBtn.addEventListener("click", handleClearAll);
+
+          // Load more button
+          loadMoreBtn.addEventListener("click", loadMoreItems);
+
+          // Modal events
+          cancelBtn.addEventListener("click", hideModal);
+          confirmModal.addEventListener("click", (e) => {
+            if (e.target === confirmModal) hideModal();
+          });
+        }
+
+        function handleSearch() {
+          const searchTerm = searchQuery.value.toLowerCase().trim();
+          filteredHistory = queryHistory.filter(
+            (item) =>
+              item.question.toLowerCase().includes(searchTerm) ||
+              item.answer.toLowerCase().includes(searchTerm)
+          );
+          currentPage = 1;
+          updateDisplay();
+        }
+
+        function handleFilters() {
+          const dateValue = dateFilter.value;
+          const sortValue = sortBy.value;
+
+          // Apply date filter
+          const now = new Date();
+          filteredHistory = queryHistory.filter((item) => {
+            switch (dateValue) {
+              case "today":
+                return isSameDay(item.timestamp, now);
+              case "week":
+                const weekAgo = new Date(
+                  now.getTime() - 7 * 24 * 60 * 60 * 1000
+                );
+                return item.timestamp >= weekAgo;
+              case "month":
+                const monthAgo = new Date(
+                  now.getTime() - 30 * 24 * 60 * 60 * 1000
+                );
+                return item.timestamp >= monthAgo;
+              default:
+                return true;
+            }
+          });
+
+          // Apply search filter
+          const searchTerm = searchQuery.value.toLowerCase().trim();
+          if (searchTerm) {
+            filteredHistory = filteredHistory.filter(
+              (item) =>
+                item.question.toLowerCase().includes(searchTerm) ||
+                item.answer.toLowerCase().includes(searchTerm)
+            );
+          }
+
+          // Apply sorting
+          filteredHistory.sort((a, b) => {
+            switch (sortValue) {
+              case "oldest":
+                return a.timestamp - b.timestamp;
+              case "alphabetical":
+                return a.question.localeCompare(b.question);
+              default: // newest
+                return b.timestamp - a.timestamp;
+            }
+          });
+
+          currentPage = 1;
+          updateDisplay();
+        }
+
+        function updateDisplay() {
+          const startIndex = 0;
+          const endIndex = currentPage * itemsPerPage;
+          const itemsToShow = filteredHistory.slice(startIndex, endIndex);
+
+          // Update counters
+          totalQueries.textContent = `${filteredHistory.length} ${
+            filteredHistory.length === 1 ? "query" : "queries"
+          }`;
+
+          // Show/hide empty state
+          if (filteredHistory.length === 0) {
+            emptyState.classList.remove("hidden");
+            historyContainer.innerHTML = "";
+            loadMoreSection.classList.add("hidden");
+            return;
+          } else {
+            emptyState.classList.add("hidden");
+          }
+
+          // Render items
+          renderHistoryItems(itemsToShow);
+
+          // Show/hide load more button
+          if (endIndex < filteredHistory.length) {
+            loadMoreSection.classList.remove("hidden");
+          } else {
+            loadMoreSection.classList.add("hidden");
+          }
+        }
+
+        function renderHistoryItems(items) {
+          historyContainer.innerHTML = items
+            .map((item) => createHistoryItemHTML(item))
+            .join("");
+
+          // Bind click events for expansion
+          items.forEach((item) => {
+            const element = document.getElementById(`item-${item.id}`);
+            const header = element.querySelector(".item-header");
+            const details = element.querySelector(".item-details");
+            const chevron = element.querySelector(".chevron");
+            const deleteBtn = element.querySelector(".delete-btn");
+            const copyBtn = element.querySelector(".copy-btn");
+            const recheckBtn = element.querySelector(".recheck-btn");
+
+            header.addEventListener("click", (e) => {
+              if (
+                e.target.closest(".delete-btn") ||
+                e.target.closest(".recheck-btn")
+              )
+                return;
+
+              const isOpen = details.classList.contains("open");
+              details.classList.toggle("open");
+              chevron.style.transform = isOpen
+                ? "rotate(0deg)"
+                : "rotate(180deg)";
+            });
+
+            deleteBtn?.addEventListener("click", (e) => {
+              e.stopPropagation();
+              handleDeleteItem(item.id);
+            });
+
+            copyBtn?.addEventListener("click", (e) => {
+              e.stopPropagation();
+              copyToClipboard(item.sql);
+            });
+
+            recheckBtn?.addEventListener("click", (e) => {
+              e.stopPropagation();
+              recheckQuery(item.question);
+            });
+          });
+        }
+
+        function createHistoryItemHTML(item) {
+          const timeAgo = getTimeAgo(item.timestamp);
+          const formattedDate = item.timestamp.toLocaleString();
+
+          return `
+                    <div id="item-${
+                      item.id
+                    }" class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
+                        <div class="item-header p-6 cursor-pointer">
+                            <div class="flex justify-between items-start">
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-start space-x-4">
+                                        <div class="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <h3 class="text-lg font-semibold text-gray-900 mb-2 pr-4">${
+                                              item.question
+                                            }</h3>
+                                            <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                                                <span class="flex items-center">
+                                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                    </svg>
+                                                    ${timeAgo}
+                                                </span>
+                                                <span class="flex items-center">
+                                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                                    </svg>
+                                                    ${item.duration}
+                                                </span>
+                                                ${
+                                                  item.chart
+                                                    ? '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-green-100 text-green-700">Chart Available</span>'
+                                                    : ""
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2 ml-4">
+                                    <button class="recheck-btn p-2 text-gray-400 hover:text-blue-600 rounded-lg hover:bg-blue-50 transition-colors" title="Run again">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                        </svg>
+                                    </button>
+                                    <button class="delete-btn p-2 text-gray-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors" title="Delete">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
+                                    </button>
+                                    <svg class="chevron w-5 h-5 text-gray-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="item-details slide-down">
+                            <div class="px-6 pb-6 pt-2 border-t border-gray-100">
+                                <!-- Answer -->
+                                <div class="mb-6">
+                                    <h4 class="font-semibold text-gray-900 mb-2">Answer</h4>
+                                    <div class="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                                        <p class="text-gray-700">${
+                                          item.answer
+                                        }</p>
+                                    </div>
+                                </div>
+
+                                ${
+                                  item.chart
+                                    ? `
+                                <!-- Chart -->
+                                <div class="mb-6">
+                                    <h4 class="font-semibold text-gray-900 mb-2">Visualization</h4>
+                                    <div class="border rounded-lg p-4 bg-gray-50">
+                                        <img src="${item.chart}" alt="Data visualization" class="max-w-full h-auto rounded-lg shadow-sm" onerror="this.parentElement.innerHTML='<p class=\\'text-gray-500\\'>Chart not available</p>'">
+                                    </div>
+                                </div>
+                                `
+                                    : ""
+                                }
+
+                                <!-- SQL Query -->
+                                <div class="mb-4">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <h4 class="font-semibold text-gray-900">SQL Query</h4>
+                                        <button class="copy-btn px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">
+                                            Copy
+                                        </button>
+                                    </div>
+                                    <textarea readonly class="w-full p-4 border border-gray-200 bg-gray-50 rounded-lg h-24 font-mono text-sm custom-scrollbar resize-none">${
+                                      item.sql
+                                    }</textarea>
+                                </div>
+
+                                <!-- Metadata -->
+                                <div class="flex flex-wrap gap-6 text-sm text-gray-500 pt-4 border-t border-gray-100">
+                                    <span><strong>Executed:</strong> ${formattedDate}</span>
+                                    <span><strong>Duration:</strong> ${
+                                      item.duration
+                                    }</span>
+                                    <span><strong>Query ID:</strong> #${
+                                      item.id
+                                    }</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+        }
+
+        function loadMoreItems() {
+          currentPage++;
+          updateDisplay();
+        }
+
+        function handleDeleteItem(itemId) {
+          const item = queryHistory.find((q) => q.id === itemId);
+          showConfirmModal(
+            `Are you sure you want to delete the query: "${item.question}"?`,
+            () => deleteItem(itemId)
+          );
+        }
+
+        function deleteItem(itemId) {
+          queryHistory = queryHistory.filter((item) => item.id !== itemId);
+          handleFilters(); // Reapply filters and update display
+          hideModal();
+        }
+
+        function handleClearAll() {
+          if (queryHistory.length === 0) return;
+
+          showConfirmModal(
+            `Are you sure you want to delete all ${queryHistory.length} queries? This action cannot be undone.`,
+            clearAllHistory
+          );
+        }
+
+        function clearAllHistory() {
+          queryHistory = [];
+          filteredHistory = [];
+          currentPage = 1;
+          updateDisplay();
+          hideModal();
+        }
+
+        function recheckQuery(question) {
+          // Redirect to main page with the question pre-filled
+          window.location.href = `index.html?q=${encodeURIComponent(question)}`;
+        }
+
+        function copyToClipboard(text) {
+          navigator.clipboard
+            .writeText(text)
+            .then(() => {
+              // Show feedback (you can enhance this with a toast notification)
+              const event = new CustomEvent("copied");
+              document.dispatchEvent(event);
+            })
+            .catch(() => {
+              // Fallback for older browsers
+              const textArea = document.createElement("textarea");
+              textArea.value = text;
+              document.body.appendChild(textArea);
+              textArea.select();
+              document.execCommand("copy");
+              document.body.removeChild(textArea);
+            });
+        }
+
+        function showConfirmModal(message, onConfirm) {
+          confirmMessage.textContent = message;
+          confirmModal.classList.remove("hidden");
+          confirmModal.classList.add("flex");
+
+          // Remove any existing event listeners
+          const newConfirmBtn = confirmBtn.cloneNode(true);
+          confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+
+          // Add new event listener
+          newConfirmBtn.addEventListener("click", () => {
+            onConfirm();
+          });
+        }
+
+        function hideModal() {
+          confirmModal.classList.add("hidden");
+          confirmModal.classList.remove("flex");
+        }
+
+        // Utility functions
+        function debounce(func, wait) {
+          let timeout;
+          return function executedFunction(...args) {
+            const later = () => {
+              clearTimeout(timeout);
+              func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+          };
+        }
+
+        function isSameDay(date1, date2) {
+          return date1.toDateString() === date2.toDateString();
+        }
+
+        function getTimeAgo(date) {
+          const now = new Date();
+          const diffInSeconds = Math.floor((now - date) / 1000);
+
+          if (diffInSeconds < 60) return "Just now";
+          if (diffInSeconds < 3600)
+            return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+          if (diffInSeconds < 86400)
+            return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+          if (diffInSeconds < 604800)
+            return `${Math.floor(diffInSeconds / 86400)} days ago`;
+
+          return date.toLocaleDateString();
+        }
+
+        // Check for pre-filled question from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const prefilledQuestion = urlParams.get("q");
+        if (prefilledQuestion) {
+          // Remove the query parameter and redirect to run the query
+          window.history.replaceState(
+            {},
+            document.title,
+            window.location.pathname
+          );
+          window.location.href = `index.html?q=${encodeURIComponent(
+            prefilledQuestion
+          )}`;
+        }
+      });
+    </script>
+  </body>
+</html>
