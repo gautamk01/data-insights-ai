@@ -4,13 +4,16 @@ import { useState } from "react";
 import QueryInput from "@/components/QueryInput";
 import ResultsDisplay from "@/components/ResultsDisplay";
 import DataChart from "@/components/DataChart";
+import ProgressBar from "@/components/progress";
 
-// Define a type for our API response
+// ... (keep the VizResult interface)
 interface VizResult {
   answer: string;
   sql: string;
   chart_type: string;
   chart_data: any;
+  success: boolean;
+  debug_info?: any;
 }
 
 export default function Home() {
@@ -19,6 +22,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
+  // ... (keep your API_BASE, handleAskQuestion, and handleClearResults functions)
   const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
 
   const handleAskQuestion = async () => {
@@ -29,7 +33,7 @@ export default function Home() {
 
     setIsLoading(true);
     setError(null);
-    setResult(null); // Clear previous results immediately
+    setResult(null);
 
     try {
       const response = await fetch(`${API_BASE}/ask/viz`, {
@@ -38,11 +42,14 @@ export default function Home() {
         body: JSON.stringify({ question }),
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${await response.text()}`);
+      const data: VizResult = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(
+          data.answer || "An unknown error occurred on the server."
+        );
       }
 
-      const data: VizResult = await response.json();
       setResult(data);
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred.");
@@ -70,11 +77,12 @@ export default function Home() {
         handleClearResults={handleClearResults}
       />
 
-      {isLoading && <div className="loading result-section">Loading...</div>}
+      {/* Conditionally render the progress bar */}
+      {isLoading && <ProgressBar />}
 
       {error && <div className="error result-section">{error}</div>}
 
-      {result && (
+      {result && result.success && (
         <>
           <ResultsDisplay result={result} />
           {result.chart_data && result.chart_type !== "none" && (

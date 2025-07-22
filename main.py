@@ -1,21 +1,37 @@
 # main.py
 from fastapi.staticfiles import StaticFiles
-from viz import plot_daily_revenue
-from viz import auto_chart
 from fastapi import FastAPI
 from pydantic import BaseModel
-from text_to_sql import handle_question, execute_sql
+from text_to_sql import handle_question
 from viz import line_chart
 import pandas as pd
 from sse_starlette.sse import EventSourceResponse
 import asyncio
-from schema_helper import get_schema_snippet
 from choose_visualization import choose_chart
 from formatter import format_for_chart
 import json
-
+from fastapi.middleware.cors import CORSMiddleware
+import logging
 
 app = FastAPI(title="E-commerce AI Agent")
+
+# Define the origins your frontend will run on
+# For development, this is typically localhost:3000
+origins = [
+    "http://localhost:3000",
+]
+# Add the CORS middleware to your app
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allows all headers
+)
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
