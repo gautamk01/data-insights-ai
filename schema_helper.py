@@ -9,12 +9,16 @@ def get_schema_snippet(limit=3):
         tables = conn.execute(
             "SELECT name, sql FROM sqlite_master WHERE type='table';"
         ).fetchall()
-    schema = []
-    for tbl, ddl in tables:
-        rows = conn.execute(f"SELECT * FROM {tbl} LIMIT {limit};").fetchall()
-        schema.append({
-            "table": tbl,
-            "ddl": ddl,
-            "sample": [dict(r._mapping) for r in rows]
-        })
+        schema = []
+        for tbl, ddl in tables:
+            # Use parameterized query to prevent SQL injection
+            rows = conn.execute(
+                f"SELECT * FROM [{tbl}] LIMIT ?", (limit,)
+            ).fetchall()
+            schema.append({
+                "table": tbl,
+                "ddl": ddl,
+                "sample": [dict(r._mapping) for r in rows]
+            })
+
     return json.dumps(schema, indent=2)

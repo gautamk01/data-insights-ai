@@ -27,7 +27,7 @@ export default function Home() {
 
   const handleAskQuestion = async () => {
     if (!question.trim()) {
-      alert("Please enter a question");
+      setError("Please enter a question");
       return;
     }
 

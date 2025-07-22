@@ -60,10 +60,6 @@ def ask_endpoint(payload: Question):
 @app.post("/ask/viz")
 def ask_viz(payload: Question):
     """Enhanced visualization endpoint with better error handling and logging"""
-    import logging
-
-    logger = logging.getLogger(__name__)
-
     try:
         logger.info(f"Processing visualization request: {payload.question}")
 

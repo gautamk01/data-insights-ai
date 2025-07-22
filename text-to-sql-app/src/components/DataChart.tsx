@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { Chart, ChartConfiguration, registerables } from "chart.js";
+import { TooltipItem } from "chart.js";
 Chart.register(...registerables);
 
 interface DataChartProps {
@@ -25,6 +26,20 @@ const DataChart = ({ type, data }: DataChartProps) => {
 
       const actualChartType = data.type || type;
 
+      const validChartTypes = [
+        "bar",
+        "line",
+        "pie",
+        "doughnut",
+        "polarArea",
+        "scatter",
+        "bubble",
+        "radar",
+      ];
+      if (!validChartTypes.includes(actualChartType)) {
+        console.error(`Invalid chart type: ${actualChartType}`);
+        return;
+      }
       const chartConfig: ChartConfiguration = {
         type: actualChartType,
         data: {
@@ -61,7 +76,7 @@ const DataChart = ({ type, data }: DataChartProps) => {
         if (chartConfig.options?.plugins) {
           chartConfig.options.plugins.tooltip = {
             callbacks: {
-              label: (context: any) => {
+              label: (context: TooltipItem<typeof actualChartType>) => {
                 const label = context.label || "";
                 const value = context.raw || 0;
                 const total = context.dataset.data.reduce(
@@ -69,7 +84,7 @@ const DataChart = ({ type, data }: DataChartProps) => {
                   0
                 );
                 const percentage =
-                  total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                  total > 0 ? ((Number(value) / total) * 100).toFixed(1) : 0;
                 return `${label}: ${value} (${percentage}%)`;
               },
             },

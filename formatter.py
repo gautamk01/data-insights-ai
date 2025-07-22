@@ -53,8 +53,13 @@ def _format_bar_chart(df: pd.DataFrame) -> Optional[Dict[str, Any]]:
     labels_col = df.columns[0]
     values_col = df.columns[1]
 
+# Add logging warnings for all silent numeric conversions To avoid masking data issues
     labels = df[labels_col].astype(str).tolist()
-    values = pd.to_numeric(df[values_col], errors='coerce').fillna(0).tolist()
+    numeric_values = pd.to_numeric(df[values_col], errors='coerce')
+    if numeric_values.isna().any():
+        logger.warning(
+            f"Non-numeric values found in {values_col}, converting to 0")
+    values = numeric_values.fillna(0).tolist()
 
     return {
         "type": "bar",
@@ -100,7 +105,10 @@ def _format_line_chart(df: pd.DataFrame) -> Optional[Dict[str, Any]]:
     y_col = df.columns[1]
 
     x_values = df[x_col].tolist()
-    y_values = pd.to_numeric(df[y_col], errors='coerce').fillna(0).tolist()
+    numeric_y = pd.to_numeric(df[y_col], errors='coerce')
+    if numeric_y.isna().any():
+        logger.warning(f"Non-numeric values found in {y_col}, converting to 0")
+    y_values = numeric_y.fillna(0).tolist()
 
     return {
         "type": "line",
@@ -184,8 +192,15 @@ def _format_scatter_chart(df: pd.DataFrame) -> Optional[Dict[str, Any]]:
     x_col = df.columns[0]
     y_col = df.columns[1]
 
-    x_values = pd.to_numeric(df[x_col], errors='coerce').fillna(0)
-    y_values = pd.to_numeric(df[y_col], errors='coerce').fillna(0)
+    numeric_x = pd.to_numeric(df[x_col], errors='coerce')
+    if numeric_x.isna().any():
+        logger.warning(f"Non-numeric values found in {x_col}, converting to 0")
+    x_values = numeric_x.fillna(0)
+
+    numeric_y = pd.to_numeric(df[y_col], errors='coerce')
+    if numeric_y.isna().any():
+        logger.warning(f"Non-numeric values found in {y_col}, converting to 0")
+    y_values = numeric_y.fillna(0)
 
     scatter_data = [{"x": x, "y": y} for x, y in zip(x_values, y_values)]
 

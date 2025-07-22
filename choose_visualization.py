@@ -79,7 +79,6 @@ def _quick_heuristics(question: str, sql: str, rows: list, num_rows: int, num_co
     Returns 'unknown' if heuristics can't decide.
     """
     question_lower = question.lower()
-    sql_lower = sql.lower()
 
     # Single value results - no chart needed
     if num_rows == 1 and num_cols == 1:

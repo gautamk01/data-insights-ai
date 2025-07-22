@@ -88,7 +88,7 @@ const ResultsDisplay = ({ result }: ResultsDisplayProps) => {
             </thead>
             <tbody>
               {data.map((row, index) => (
-                <tr key={index}>
+                <tr key={row.id || row.item_id || `row-${index}`}>
                   {headers.map((header) => (
                     <td key={header}>
                       {/* Use the new intelligent formatter */}
