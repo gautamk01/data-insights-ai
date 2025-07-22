@@ -23,7 +23,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
 
   //(keep your API_BASE, handleAskQuestion, and handleClearResults functions)
-  const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
+  const API_BASE = "https://data-insights-ai.onrender.com";
 
   const handleAskQuestion = async () => {
     if (!question.trim()) {
