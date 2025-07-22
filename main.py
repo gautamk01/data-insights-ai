@@ -9,6 +9,9 @@ from viz import line_chart
 import pandas as pd
 from sse_starlette.sse import EventSourceResponse
 import asyncio
+from schema_helper import get_schema_snippet
+from choose_visualization import choose_chart
+from formatter import format_for_chart
 import json
 
 
@@ -36,6 +39,78 @@ def ask_endpoint(payload: Question):
         return {"answer": result.get("answer", str(rows)), "sql": sql, "chart": chart_url}
     except Exception as e:
         return {"answer": f"Error: {e}", "sql": "", "chart": None}
+
+
+@app.post("/ask/viz")
+def ask_viz(payload: Question):
+    """Enhanced visualization endpoint with better error handling and logging"""
+    import logging
+
+    logger = logging.getLogger(__name__)
+
+    try:
+        logger.info(f"Processing visualization request: {payload.question}")
+
+        # Get SQL result
+        result = handle_question(payload.question)
+        logger.debug(f"handle_question result: {result}")
+
+        # If rejected or no data, return early
+        if not result.get("success") or not result.get("data"):
+            logger.warning(
+                "No successful data result - skipping visualization")
+            return {
+                "answer": result.get("answer", "No data available"),
+                "sql": result.get("sql", ""),
+                "chart_type": "none",
+                "chart_data": None,
+                "success": False,
+                "debug_info": "No data to visualize"
+            }
+
+        rows = result["data"]
+        logger.info(f"Got {len(rows)} rows of data")
+        logger.debug(f"Sample data: {rows[:2] if rows else 'No rows'}")
+
+        # Choose chart type
+        chart_type = choose_chart(payload.question, result["sql"], rows)
+        logger.info(f"Selected chart type: {chart_type}")
+
+        # Format chart data
+        chart_json = None
+        if chart_type != "none":
+            chart_json = format_for_chart(rows, chart_type)
+            logger.info(f"Chart data formatted: {chart_json is not None}")
+            if chart_json:
+                logger.debug(f"Chart structure: {list(chart_json.keys())}")
+
+        response = {
+            "answer": result["answer"],
+            "sql": result["sql"],
+            "chart_type": chart_type,
+            "chart_data": chart_json,
+            "success": True,
+            "debug_info": {
+                "rows_count": len(rows),
+                "columns": list(rows[0].keys()) if rows else [],
+                "chart_formatted": chart_json is not None
+            }
+        }
+
+        logger.info(
+            f"Returning response with chart_type={chart_type}, has_chart_data={chart_json is not None}")
+        return response
+
+    except Exception as e:
+        logger.error(f"Error in ask_viz: {str(e)}", exc_info=True)
+        return {
+            "answer": f"Error processing visualization: {str(e)}",
+            "sql": "",
+            "chart_type": "error",
+            "chart_data": None,
+            "success": False,
+            "debug_info": f"Exception: {str(e)}"
+        }
 
 
 @app.post("/ask/chart")
