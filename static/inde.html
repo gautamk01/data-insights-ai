@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Data Insights</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      /* Improved animation for the progress bar */
+      #progressBar {
+        transition: width 0.3s ease-in-out;
+      }
+      /* Add smooth transitions for showing/hiding elements */
+      .fade-in {
+        opacity: 0;
+        animation: fadeIn 0.5s ease-in-out forwards;
+      }
+      @keyframes fadeIn {
+        to {
+          opacity: 1;
+        }
+      }
+      /* Styling for streaming text */
+      .streaming-text {
+        font-family: "Inter", monospace;
+        white-space: pre-wrap;
+        line-height: 1.6;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-800">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+      <div
+        class="container mx-auto px-6 py-4 flex justify-between items-center"
+      >
+        <div class="flex items-center space-x-2">
+          <!-- Data Insights Icon -->
+          <svg
+            class="w-8 h-8 text-blue-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+            ></path>
+          </svg>
+          <h1 class="text-xl font-bold">Data Insights</h1>
+        </div>
+        <nav class="hidden md:flex items-center space-x-8">
+          <a
+            href="#"
+            class="text-gray-600 hover:text-blue-600 transition-colors"
+            >Home</a
+          >
+          <a
+            href="#"
+            class="text-gray-600 hover:text-blue-600 transition-colors"
+            >Query</a
+          >
+          <a
+            href="history.html"
+            class="text-gray-600 hover:text-blue-600 transition-colors"
+            >History</a
+          >
+        </nav>
+        <div class="flex items-center space-x-4">
+          <!-- Info Icon -->
+          <button class="text-gray-500 hover:text-gray-700 transition-colors">
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
+            </svg>
+          </button>
+          <!-- User Profile Icon -->
+          <div class="w-8 h-8 bg-gray-800 rounded-full"></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-12">
+      <div class="max-w-4xl mx-auto">
+        <!-- Welcome Section -->
+        <section>
+          <h2 class="text-4xl font-bold mb-4">Welcome to Data Insights</h2>
+          <p class="text-gray-600 text-lg">
+            Data Insights is an AI-powered tool that allows you to ask questions
+            about your e-commerce data in natural language. Get insights into
+            your sales, marketing performance, and product metrics with ease.
+          </p>
+        </section>
+
+        <!-- Quick Start Guide -->
+        <section class="mt-12">
+          <h3 class="text-2xl font-semibold mb-6">Quick Start Guide</h3>
+          <div class="grid md:grid-cols-3 gap-8">
+            <!-- Step 1 -->
+            <div class="flex items-start space-x-4">
+              <div
+                class="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center"
+              >
+                <svg
+                  class="w-6 h-6 text-blue-600"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zm-7.518-.267A8.25 8.25 0 1720.25 10.5M8.288 14.212A5.25 5.25 0 1117.25 10.5"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h4 class="font-semibold text-lg">1. Go to Query</h4>
+                <p class="text-gray-500">
+                  Navigate to the Query interface to input your questions.
+                </p>
+              </div>
+            </div>
+            <!-- Step 2 -->
+            <div class="flex items-start space-x-4">
+              <div
+                class="flex-shrink-0 w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center"
+              >
+                <svg
+                  class="w-6 h-6 text-green-600"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h4 class="font-semibold text-lg">2. Ask Your Question</h4>
+                <p class="text-gray-500">
+                  Use natural language to ask questions about your data.
+                </p>
+              </div>
+            </div>
+            <!-- Step 3 -->
+            <div class="flex items-start space-x-4">
+              <div
+                class="flex-shrink-0 w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center"
+              >
+                <svg
+                  class="w-6 h-6 text-purple-600"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M3.75 3v11.25A2.25 2.25 0 006 16.5h12M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0018 16.5h-12a2.25 2.25 0 01-2.25-2.25V3m16.5 0a2.25 2.25 0 00-2.25-2.25h-12a2.25 2.25 0 00-2.25-2.25m16.5 0l-3.75 3.75m-12.75 0l3.75 3.75M3.75 12h16.5"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h4 class="font-semibold text-lg">3. Get Insights</h4>
+                <p class="text-gray-500">
+                  View the human-readable answer, SQL query, and dynamic
+                  visualizations.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Question Form -->
+        <section class="mt-12">
+          <form id="queryForm" class="bg-white p-6 rounded-lg shadow-md">
+            <label for="question" class="block text-lg font-medium mb-2"
+              >Ask your question</label
+            >
+            <div class="flex flex-col sm:flex-row gap-4">
+              <input
+                type="text"
+                id="question"
+                name="question"
+                class="flex-1 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                placeholder="e.g., Which products have highest CPC?"
+                required
+              />
+              <button
+                type="submit"
+                id="submitBtn"
+                class="px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Ask Question
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Loading and Results Section -->
+        <section id="responseSection" class="mt-8 hidden">
+          <!-- Loading Indicator -->
+          <div id="loadingIndicator" class="bg-white p-6 rounded-lg shadow-md">
+            <div class="flex items-center space-x-3 mb-4">
+              <div
+                class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"
+              ></div>
+              <h3 class="text-xl font-semibold">Processing your question...</h3>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-3 mb-4">
+              <div
+                id="progressBar"
+                class="bg-blue-600 h-3 rounded-full transition-all duration-300"
+                style="width: 0%"
+              ></div>
+            </div>
+
+            <!-- Streaming Response -->
+            <div
+              id="streamingResponse"
+              class="bg-gray-50 p-4 rounded-lg border"
+            >
+              <h4 class="font-semibold mb-2">Live Response:</h4>
+              <div
+                id="streamingText"
+                class="streaming-text text-gray-700 min-h-[100px] max-h-[300px] overflow-y-auto"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Results -->
+          <div
+            id="resultsContent"
+            class="hidden bg-white p-6 rounded-lg shadow-md"
+          >
+            <h3 class="text-2xl font-semibold mb-4 text-green-600">
+              ✓ Analysis Complete
+            </h3>
+
+            <!-- Human Readable Answer -->
+            <div
+              class="mb-6 p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500"
+            >
+              <h4 class="font-semibold text-lg mb-2">Answer</h4>
+              <p id="humanReadableAnswer" class="text-gray-700"></p>
+            </div>
+
+            <!-- Chart Visualization -->
+            <div id="chartSection" class="mb-6 hidden">
+              <h4 class="font-semibold text-lg mb-2">Visualization</h4>
+              <div class="border rounded-lg p-4 bg-gray-50">
+                <img
+                  id="chartImage"
+                  src=""
+                  alt="Data visualization chart"
+                  class="max-w-full h-auto rounded-lg shadow-sm"
+                />
+              </div>
+            </div>
+
+            <!-- SQL Query -->
+            <div class="mb-6">
+              <div class="flex justify-between items-center mb-2">
+                <label for="sqlQuery" class="block text-lg font-medium"
+                  >Generated SQL Query</label
+                >
+                <button
+                  id="copyBtn"
+                  class="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
+                >
+                  Copy
+                </button>
+              </div>
+              <textarea
+                id="sqlQuery"
+                readonly
+                class="w-full p-4 border border-gray-200 bg-gray-50 rounded-lg h-32 font-mono text-sm resize-none"
+              ></textarea>
+            </div>
+
+            <!-- Reset Button -->
+            <button
+              id="resetBtn"
+              class="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+            >
+              Ask Another Question
+            </button>
+          </div>
+
+          <!-- Error Display -->
+          <div
+            id="errorContent"
+            class="hidden bg-red-50 border border-red-200 p-6 rounded-lg"
+          >
+            <h3 class="text-xl font-semibold mb-2 text-red-600">Error</h3>
+            <p id="errorMessage" class="text-red-700"></p>
+            <button
+              id="retryBtn"
+              class="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+            >
+              Try Again
+            </button>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      // Wait for the DOM to be fully loaded
+      document.addEventListener("DOMContentLoaded", () => {
+        // Element Selections
+        const queryForm = document.getElementById("queryForm");
+        const responseSection = document.getElementById("responseSection");
+        const loadingIndicator = document.getElementById("loadingIndicator");
+        const progressBar = document.getElementById("progressBar");
+        const streamingText = document.getElementById("streamingText");
+        const resultsContent = document.getElementById("resultsContent");
+        const errorContent = document.getElementById("errorContent");
+        const sqlQueryTextarea = document.getElementById("sqlQuery");
+        const humanReadableAnswerEl = document.getElementById(
+          "humanReadableAnswer"
+        );
+        const questionInput = document.getElementById("question");
+        const submitBtn = document.getElementById("submitBtn");
+        const copyBtn = document.getElementById("copyBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const retryBtn = document.getElementById("retryBtn");
+        const chartSection = document.getElementById("chartSection");
+        const chartImage = document.getElementById("chartImage");
+        const errorMessage = document.getElementById("errorMessage");
+
+        let currentEventSource = null;
+        let finalResponse = null;
+
+        // Validation: Check if all required elements exist
+        const requiredElements = [
+          queryForm,
+          responseSection,
+          loadingIndicator,
+          progressBar,
+          resultsContent,
+          sqlQueryTextarea,
+          humanReadableAnswerEl,
+          questionInput,
+          submitBtn,
+          streamingText,
+        ];
+
+        if (requiredElements.some((el) => !el)) {
+          console.error(
+            "Initialization failed: One or more required elements are missing from the DOM."
+          );
+          return;
+        }
+
+        // Form submission handling
+        queryForm.addEventListener("submit", function (event) {
+          event.preventDefault();
+          const question = questionInput.value.trim();
+          if (!question) {
+            alert("Please enter a question before submitting.");
+            return;
+          }
+          askQuestion(question);
+        });
+
+        // Copy button functionality
+        if (copyBtn) {
+          copyBtn.addEventListener("click", () => {
+            sqlQueryTextarea.select();
+            document.execCommand("copy");
+
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = "Copied!";
+            copyBtn.classList.add("bg-green-100", "text-green-600");
+
+            setTimeout(() => {
+              copyBtn.textContent = originalText;
+              copyBtn.classList.remove("bg-green-100", "text-green-600");
+            }, 2000);
+          });
+        }
+
+        // Reset button functionality
+        if (resetBtn) {
+          resetBtn.addEventListener("click", resetForm);
+        }
+
+        // Retry button functionality
+        if (retryBtn) {
+          retryBtn.addEventListener("click", () => {
+            const question = questionInput.value.trim();
+            if (question) {
+              askQuestion(question);
+            }
+          });
+        }
+
+        function resetForm() {
+          if (currentEventSource) {
+            currentEventSource.close();
+            currentEventSource = null;
+          }
+
+          responseSection.classList.add("hidden");
+          loadingIndicator.classList.add("hidden");
+          resultsContent.classList.add("hidden");
+          errorContent.classList.add("hidden");
+          chartSection.classList.add("hidden");
+
+          questionInput.value = "";
+          questionInput.focus();
+          submitBtn.disabled = false;
+          streamingText.innerHTML = "";
+          progressBar.style.width = "0%";
+          finalResponse = null;
+        }
+
+        function showError(message) {
+          loadingIndicator.classList.add("hidden");
+          resultsContent.classList.add("hidden");
+          errorContent.classList.remove("hidden");
+          errorMessage.textContent = message;
+          submitBtn.disabled = false;
+        }
+
+        async function askQuestion(question) {
+          try {
+            // Reset previous state
+            submitBtn.disabled = true;
+            responseSection.classList.remove("hidden");
+            loadingIndicator.classList.remove("hidden");
+            resultsContent.classList.add("hidden");
+            errorContent.classList.add("hidden");
+            chartSection.classList.add("hidden");
+            streamingText.innerHTML = "";
+            progressBar.style.width = "0%";
+            finalResponse = null;
+
+            // Close any existing EventSource
+            if (currentEventSource) {
+              currentEventSource.close();
+            }
+
+            // Start streaming
+            const encodedQuestion = encodeURIComponent(question);
+            currentEventSource = new EventSource(
+              `/ask/stream?question=${encodedQuestion}`
+            );
+
+            let progressWidth = 0;
+            const progressInterval = setInterval(() => {
+              if (progressWidth < 90) {
+                progressWidth += Math.random() * 10 + 5;
+                progressBar.style.width = Math.min(progressWidth, 90) + "%";
+              }
+            }, 500);
+
+            currentEventSource.onmessage = (event) => {
+              try {
+                const data = JSON.parse(event.data);
+
+                if (data.type === "done") {
+                  clearInterval(progressInterval);
+                  progressBar.style.width = "100%";
+                  currentEventSource.close();
+                  currentEventSource = null;
+
+                  // Get final results from the regular API endpoint
+                  setTimeout(() => {
+                    getFinalResults(question);
+                  }, 500);
+                } else if (data.text) {
+                  // Append streaming text
+                  streamingText.innerHTML += data.text + "\n";
+                  streamingText.scrollTop = streamingText.scrollHeight;
+                }
+              } catch (parseError) {
+                console.error("Error parsing message:", parseError);
+              }
+            };
+
+            currentEventSource.onerror = (error) => {
+              clearInterval(progressInterval);
+              console.error("EventSource error:", error);
+              currentEventSource.close();
+              currentEventSource = null;
+
+              // Fallback to regular API call
+              getFinalResults(question);
+            };
+
+            // Timeout fallback
+            setTimeout(() => {
+              if (
+                currentEventSource &&
+                currentEventSource.readyState === EventSource.OPEN
+              ) {
+                clearInterval(progressInterval);
+                progressBar.style.width = "100%";
+                currentEventSource.close();
+                currentEventSource = null;
+                getFinalResults(question);
+              }
+            }, 30000); // 30 second timeout
+          } catch (error) {
+            console.error("Error in askQuestion:", error);
+            showError("Failed to process your question. Please try again.");
+          }
+        }
+
+        async function getFinalResults(question) {
+          try {
+            const response = await fetch("/ask", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ question: question }),
+            });
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            finalResponse = data;
+
+            displayResults(data);
+          } catch (error) {
+            console.error("Error getting final results:", error);
+            showError("Failed to get final results. Please try again.");
+          }
+        }
+
+        function displayResults(data) {
+          // Hide loading, show results
+          loadingIndicator.classList.add("hidden");
+          resultsContent.classList.remove("hidden");
+          resultsContent.classList.add("fade-in");
+
+          // Display answer
+          if (data.answer) {
+            humanReadableAnswerEl.textContent = data.answer;
+          }
+
+          // Display SQL query
+          if (data.sql) {
+            sqlQueryTextarea.value = data.sql;
+          }
+
+          // Display chart if available
+          if (data.chart) {
+            chartImage.src = data.chart;
+            chartImage.onerror = () => {
+              chartSection.classList.add("hidden");
+              console.warn("Chart image failed to load:", data.chart);
+            };
+            chartImage.onload = () => {
+              chartSection.classList.remove("hidden");
+            };
+          } else {
+            chartSection.classList.add("hidden");
+          }
+
+          // Re-enable submit button
+          submitBtn.disabled = false;
+        }
+
+        // Handle page unload to close EventSource
+        window.addEventListener("beforeunload", () => {
+          if (currentEventSource) {
+            currentEventSource.close();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

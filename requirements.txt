@@ -1,0 +1,10 @@
+fastapi
+pydantic
+sse-starlette
+uvicorn
+pandas
+matplotlib
+seaborn
+SQLAlchemy
+google-generativeai
+python-dotenv
