@@ -72,7 +72,7 @@ Follow these steps to run the project on your local machine.
 
 4.  **Run the FastAPI server:**
     ```bash
-    uvicorn main:app --reload
+    uvicorn main:app --reload --port 8000
     ```
     The backend will be running at `http://127.0.0.1:8000`.
 
@@ -182,20 +182,9 @@ curl -X POST http://localhost:8000/ask/viz \
       {
         "label": "Revenue",
         "data": [
-          35500.25,
-          38854.82,
-          25980.760000000002,
-          27791.6,
-          23431.55,
-          30737.95,
-          28061.26,
-          23370.440000000002,
-          29657.45,
-          25531.28,
-          27142.1,
-          28872.48,
-          41114.79,
-          33031.479999999996
+          35500.25, 38854.82, 25980.760000000002, 27791.6, 23431.55, 30737.95,
+          28061.26, 23370.440000000002, 29657.45, 25531.28, 27142.1, 28872.48,
+          41114.79, 33031.479999999996
         ],
         "borderColor": "rgba(75, 192, 192, 1)",
         "backgroundColor": "rgba(75, 192, 192, 0.2)",
@@ -208,10 +197,7 @@ curl -X POST http://localhost:8000/ask/viz \
   "success": true,
   "debug_info": {
     "rows_count": 14,
-    "columns": [
-      "date",
-      "revenue"
-    ],
+    "columns": ["date", "revenue"],
     "chart_formatted": true
   }
 }
